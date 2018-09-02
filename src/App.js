@@ -1,48 +1,59 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import logo from "./cursor.png";
+import PropTypes from "prop-types";
 
-class App extends Component {
-  state = { toggle: true };
-  toggleToggle = () => this.setState({ toggle: !this.state.toggle });
+class Cat extends React.Component {
   render() {
-    const { toggle } = this.state;
+    const mouse = this.props.mouse;
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1>
-            This app is built with <br />React ⚛️ + Parcel 📦!
-          </h1>
-          <img
-            src={logo}
-            onClick={this.toggleToggle}
-            className={'App-logo ' + (toggle && 'Logo-spin')}
-            alt="logo"
-          />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <A href="https://reactjs.org/">Learn React</A>
-          <A href="https://parceljs.org/getting_started.html">Learn Parcel</A>
-        </header>
+      <img
+        src={logo}
+        style={{
+          position: "absolute",
+          left: mouse.x,
+          top: mouse.y,
+          height: "30px",
+          width: "30px"
+        }}
+      />
+    );
+  }
+}
+
+class Mouse extends React.Component {
+  static propTypes = {
+    render: PropTypes.func.isRequired
+  };
+
+  state = { x: 0, y: 0 };
+
+  handleMouseMove = event => {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    });
+  };
+
+  render() {
+    return (
+      <div
+        style={{ height: "100%", width: "100%", position: "absolute" }}
+        onMouseMove={this.handleMouseMove}
+      >
+        {this.props.render(this.state)}
       </div>
     );
   }
 }
 
-function A(props) {
-  // you can use object spread because babel-preset-react-app is set up for you
-  const { href, children, ...rest } = props;
-  return (
-    <a
-      className="App-link"
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      {...rest}
-    >
-      {children}
-    </a>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div style={{ height: "100%" }}>
+        <Mouse render={mouse => <Cat mouse={mouse} />} />
+      </div>
+    );
+  }
 }
+
 export default App;
